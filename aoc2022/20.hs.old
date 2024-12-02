@@ -1,0 +1,71 @@
+import Data.Vector (Vector, (!))
+import qualified Data.Vector as Vector
+import Debug.Trace
+import Data.Foldable (foldr', foldl')
+import Data.List.NonEmpty (NonEmpty (..))
+import Data.Bifunctor (second)
+
+readData :: IO (Vector Int)
+readData = do
+  content <- readFile "20.dat"
+  return . Vector.fromList . map read . lines $ content
+
+(<.>) :: Vector Int -> Vector Int -> Vector Int
+p1 <.> p2 = Vector.map (p2!) p1
+
+unity :: Int -> Vector Int
+unity n = Vector.fromList [0..n-1]
+
+move :: Int -> Int -> Int -> Vector Int
+move n pos amt = Vector.fromList $ map idx [0..n-1]
+  where
+    idx x
+      | x == newPos            = pos
+      | x >= pos && x < newPos = x + 1
+      | x <= pos && x > newPos = x - 1
+      | otherwise              = x
+    -- extraShifts = (pos + amt + signum amt) `div` n
+    newPos = (pos + amt) `mod` (n-1)
+
+-- moveInv :: Int -> Int -> Int -> Vector Int
+-- moveInv n pos amt = Vector.fromList $ map idx [0..n-1]
+--   where
+--     idx x
+--       | x == pos               = newPos
+--       | x >= newPos && x < pos = x + 1
+--       | x <= newPos && x > pos = x - 1
+--       | otherwise              = x
+--     -- There is an extra shift whenver wrapping around the list
+--     -- for some reason...
+--     extraShifts = (pos + amt) `div` (n-1)
+--     newPos = (pos + amt + extraShifts) `mod` (n-1)
+
+inv :: Vector Int -> Int -> Int
+vec `inv` i = case Vector.elemIndex i vec of
+  Just idx -> idx
+  Nothing -> error "Unexpected"
+
+main = do
+  numbers <- readData
+
+  let
+    n = length numbers
+    actions = zip [0..] (Vector.toList numbers)
+
+    apply :: Vector Int -> (Int, Int) -> Vector Int
+    apply init (idx, amt) = move n (init `inv` idx) amt <.> init
+
+    st = foldl' apply (unity n) actions
+    finalNums = Vector.map (numbers!) st
+    start = finalNums `inv` 0
+
+  print . sum . map (\i -> finalNums ! ((start + i) `mod` n)) $ [1000, 2000, 3000]
+
+  -- putStrLn "Part 2"
+  -- let 
+  --   mul = (811589153*)
+  --   actions' = concat . replicate 10 . map (second mul) $ actions
+  --   st' = foldl' apply (unity n) actions'
+  --   finalNums' = Vector.map (mul . (numbers!)) st'
+  --   start' = finalNums' `inv` 0
+  -- print . sum . map (\i -> finalNums' ! ((start' + i) `mod` n)) $ [1000, 2000, 3000]

@@ -1,0 +1,119 @@
+[package]
+name = "aoc2023"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+counter = "0.5.7"
+derive_more = "0.99.17"
+ibig = "0.3.6"
+image = "0.24.7"
+itertools = "0.12.0"
+rand = "0.8.5"
+rayon = "1.8.0"
+regex = "1.10.2"
+tqdm = "0.6.0"
+
+
+[[bin]]
+name = "01"
+path = "src/bin/01.rs"
+
+[[bin]]
+name = "02"
+path = "src/bin/02.rs"
+
+[[bin]]
+name = "03"
+path = "src/bin/03.rs"
+
+[[bin]]
+name = "04"
+path = "src/bin/04.rs"
+
+[[bin]]
+name = "05"
+path = "src/bin/05.rs"
+
+[[bin]]
+name = "06"
+path = "src/bin/06.rs"
+
+[[bin]]
+name = "07"
+path = "src/bin/07.rs"
+
+[[bin]]
+name = "08"
+path = "src/bin/08.rs"
+
+[[bin]]
+name = "09"
+path = "src/bin/09.rs"
+
+[[bin]]
+name = "10"
+path = "src/bin/10.rs"
+
+[[bin]]
+name = "11"
+path = "src/bin/11.rs"
+
+[[bin]]
+name = "12"
+path = "src/bin/12.rs"
+
+[[bin]]
+name = "13"
+path = "src/bin/13.rs"
+
+[[bin]]
+name = "14"
+path = "src/bin/14.rs"
+
+[[bin]]
+name = "15"
+path = "src/bin/15.rs"
+
+[[bin]]
+name = "16"
+path = "src/bin/16.rs"
+
+[[bin]]
+name = "17"
+path = "src/bin/17.rs"
+
+[[bin]]
+name = "18"
+path = "src/bin/18.rs"
+
+[[bin]]
+name = "19"
+path = "src/bin/19.rs"
+
+[[bin]]
+name = "20"
+path = "src/bin/20.rs"
+
+[[bin]]
+name = "21"
+path = "src/bin/21.rs"
+
+[[bin]]
+name = "22"
+path = "src/bin/22.rs"
+
+[[bin]]
+name = "23"
+path = "src/bin/23.rs"
+
+[[bin]]
+name = "24"
+path = "src/bin/24.rs"
+
+[[bin]]
+name = "25"
+path = "src/bin/25.rs"
+
