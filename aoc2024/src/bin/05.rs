@@ -18,11 +18,10 @@ pub fn quicksort<T: IntoIterator<Item = i32>>(vec: T, rules: &HashSet<(i32, i32)
             let (left, right) = numbers.partition::<Vec<i32>, _>(|a| {
                 rules.contains(&(*a, pivot)) && !rules.contains(&(pivot, *a))
             });
-            return quicksort(left, rules)
-                .into_iter()
-                .chain([pivot].into_iter())
-                .chain(quicksort(right, rules))
-                .collect();
+            let mut res = quicksort(left, rules);
+            res.push(pivot);
+            res.append(&mut quicksort(right, rules));
+            return res;
         }
         None => {
             return vec![];
