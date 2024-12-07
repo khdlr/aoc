@@ -57,7 +57,7 @@ fn simulate(grid: &Grid<bool>, state: GuardState) -> (HashSet<GuardState>, bool)
     let mut visited = HashSet::from([state]);
     let mut has_loop = false;
 
-    'outer: loop {
+    loop {
         let next = state.step();
         match grid.get((next.y, next.x)) {
             Some(true) => {
@@ -67,7 +67,7 @@ fn simulate(grid: &Grid<bool>, state: GuardState) -> (HashSet<GuardState>, bool)
                 state = next;
                 if visited.contains(&state) {
                     has_loop = true;
-                    break 'outer;
+                    break;
                 }
                 visited.insert(state);
 
@@ -78,7 +78,7 @@ fn simulate(grid: &Grid<bool>, state: GuardState) -> (HashSet<GuardState>, bool)
                     sleep(Duration::from_millis(20));
                 }
             }
-            None => break 'outer,
+            None => break,
         }
     }
 
