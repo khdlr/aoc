@@ -225,6 +225,11 @@ where
             })
             .collect()
     }
+
+    pub fn inside(&self, coords: (i32, i32)) -> bool {
+        let (y, x) = coords;
+        y >= 0 && x >= 0 && y < self.height() && x < self.width()
+    }
 }
 
 impl<T> Grid<T>
