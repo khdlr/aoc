@@ -67,7 +67,7 @@ where
     type Item = ((i32, i32), &'a T);
 
     fn next(&mut self) -> Option<Self::Item> {
-        let res = if self.pos.1 < self.grid.height() as usize {
+        let res = if self.pos.0 < self.grid.height() as usize {
             Some((
                 (self.pos.0 as i32, self.pos.1 as i32),
                 &self.grid.grid[self.pos.0][self.pos.1],
