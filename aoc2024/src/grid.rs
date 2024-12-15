@@ -88,12 +88,27 @@ where
     }
 }
 
-impl<'a, U, B> FromIterator<((i32, i32), B)> for Grid<U>
+impl<S> FromIterator<S> for Grid<char>
+where
+    S: Into<String>,
+{
+    fn from_iter<T: IntoIterator<Item = S>>(iter: T) -> Self {
+        let grid = iter
+            .into_iter()
+            .map(|row| row.into().chars().map(|c| c.clone()).collect::<Vec<_>>())
+            .collect();
+        Self { grid }
+    }
+}
+
+impl<U> Grid<U>
 where
     U: Clone,
-    B: Borrow<U>,
 {
-    fn from_iter<T: IntoIterator<Item = ((i32, i32), B)>>(iter: T) -> Self {
+    fn from_entries<T: IntoIterator<Item = ((i32, i32), B)>, B>(iter: T) -> Self
+    where
+        B: Borrow<U>,
+    {
         let elements: Vec<((i32, i32), U)> = iter
             .into_iter()
             .map(|(pos, b)| (pos, b.borrow().clone()))
@@ -229,6 +244,11 @@ where
     pub fn inside(&self, coords: (i32, i32)) -> bool {
         let (y, x) = coords;
         y >= 0 && x >= 0 && y < self.height() && x < self.width()
+    }
+
+    pub fn filled(value: T, height: i32, width: i32) -> Self {
+        let grid = vec![vec![value; width as usize]; height as usize];
+        Self { grid }
     }
 }
 
