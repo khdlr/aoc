@@ -1,4 +1,4 @@
-use std::{fmt::Display, str::FromStr};
+use std::{collections::HashSet, fmt::Display};
 
 #[derive(PartialEq, Eq, Hash, Copy, Clone, Debug, PartialOrd, Ord)]
 pub enum Dir {
@@ -59,8 +59,34 @@ impl Display for Dir {
                 Dir::N => '↑',
                 Dir::W => '←',
                 Dir::E => '→',
-                Dir::S => '→',
+                Dir::S => '↓',
             }
         )
+    }
+}
+
+pub fn show_dirset(set: &HashSet<Dir>) -> char {
+    let n = set.contains(&Dir::N);
+    let e = set.contains(&Dir::E);
+    let s = set.contains(&Dir::S);
+    let w = set.contains(&Dir::W);
+
+    match (n, e, s, w) {
+        (true, true, true, true) => '┼',
+        (true, true, true, false) => '├',
+        (true, true, false, true) => '┴',
+        (true, true, false, false) => '└',
+        (true, false, true, true) => '┤',
+        (true, false, true, false) => '↕',
+        (true, false, false, true) => '┘',
+        (true, false, false, false) => '↑',
+        (false, true, true, true) => '┬',
+        (false, true, true, false) => '┌',
+        (false, true, false, true) => '🡘',
+        (false, true, false, false) => '→',
+        (false, false, true, true) => '┐',
+        (false, false, true, false) => '↓',
+        (false, false, false, true) => '←',
+        (false, false, false, false) => ' ',
     }
 }
