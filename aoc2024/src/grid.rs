@@ -254,6 +254,18 @@ where
 
 impl<T> Grid<T>
 where
+    T: Clone + Eq,
+{
+    pub fn find(&self, value: T) -> Option<(i32, i32)> {
+        self.iter()
+            .with_pos()
+            .filter_map(|(p, v)| (*v == value).then_some(p))
+            .next()
+    }
+}
+
+impl<T> Grid<T>
+where
     T: Clone + Default,
 {
     pub fn empty(height: i32, width: i32) -> Self {

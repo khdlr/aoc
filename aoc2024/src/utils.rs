@@ -30,6 +30,24 @@ impl Dir {
             _ => panic!("Cannot convert `{chr}` to direction!"),
         }
     }
+
+    pub fn left(&self) -> Dir {
+        match self {
+            Dir::N => Dir::W,
+            Dir::W => Dir::S,
+            Dir::E => Dir::N,
+            Dir::S => Dir::E,
+        }
+    }
+
+    pub fn right(&self) -> Dir {
+        match self {
+            Dir::N => Dir::E,
+            Dir::W => Dir::N,
+            Dir::E => Dir::S,
+            Dir::S => Dir::W,
+        }
+    }
 }
 
 impl Display for Dir {
