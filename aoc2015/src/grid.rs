@@ -67,7 +67,7 @@ where
     type Item = ((i32, i32), &'a T);
 
     fn next(&mut self) -> Option<Self::Item> {
-        let res = if self.pos.1 < self.grid.height() as usize {
+        let res = if self.pos.0 < self.grid.height() as usize {
             Some((
                 (self.pos.0 as i32, self.pos.1 as i32),
                 &self.grid.grid[self.pos.0][self.pos.1],
@@ -88,12 +88,27 @@ where
     }
 }
 
-impl<'a, U, B> FromIterator<((i32, i32), B)> for Grid<U>
+impl<S> FromIterator<S> for Grid<char>
+where
+    S: Into<String>,
+{
+    fn from_iter<T: IntoIterator<Item = S>>(iter: T) -> Self {
+        let grid = iter
+            .into_iter()
+            .map(|row| row.into().chars().map(|c| c.clone()).collect::<Vec<_>>())
+            .collect();
+        Self { grid }
+    }
+}
+
+impl<U> Grid<U>
 where
     U: Clone,
-    B: Borrow<U>,
 {
-    fn from_iter<T: IntoIterator<Item = ((i32, i32), B)>>(iter: T) -> Self {
+    fn from_entries<T: IntoIterator<Item = ((i32, i32), B)>, B>(iter: T) -> Self
+    where
+        B: Borrow<U>,
+    {
         let elements: Vec<((i32, i32), U)> = iter
             .into_iter()
             .map(|(pos, b)| (pos, b.borrow().clone()))
@@ -229,6 +244,23 @@ where
     pub fn inside(&self, coords: (i32, i32)) -> bool {
         let (y, x) = coords;
         y >= 0 && x >= 0 && y < self.height() && x < self.width()
+    }
+
+    pub fn filled(value: T, height: i32, width: i32) -> Self {
+        let grid = vec![vec![value; width as usize]; height as usize];
+        Self { grid }
+    }
+}
+
+impl<T> Grid<T>
+where
+    T: Clone + Eq,
+{
+    pub fn find(&self, value: T) -> Option<(i32, i32)> {
+        self.iter()
+            .with_pos()
+            .filter_map(|(p, v)| (*v == value).then_some(p))
+            .next()
     }
 }
 
