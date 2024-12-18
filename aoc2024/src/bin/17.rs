@@ -147,6 +147,29 @@ fn find_prefix_cycle(
     (start, cycle)
 }
 
+fn try_from(
+    computer: &Y8Computer,
+    start: i64,
+    program: &Vec<Data>,
+    postfix_len: usize,
+) -> Option<i64> {
+    let i = postfix_len;
+    for reg_a in start..start + 8 {
+        let outp = computer.run_with_a(reg_a);
+        if (outp.len() >= i) && outp[outp.len() - i] == program[program.len() - i] as i64 {
+            // println!("{} produces {outp:?}", reg_a);
+            if i == program.len() {
+                return Some(reg_a);
+            } else {
+                if let Some(result) = try_from(computer, 8 * reg_a, program, postfix_len + 1) {
+                    return Some(result);
+                }
+            }
+        }
+    }
+    None
+}
+
 pub fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = env::args().collect();
     let input = read_to_string(&args[1])?;
@@ -191,48 +214,12 @@ pub fn main() -> Result<(), Box<dyn Error>> {
         .collect::<Vec<_>>()
         .join(",");
 
-    let computer = Y8Computer::load(reg_a, reg_b, reg_c, program.clone());
-    println!("1: {:?}", computer.run_with_a(1));
-    println!("8: {:?}", computer.run_with_a(8));
-    println!("8*64: {:?}", computer.run_with_a(8 * 64));
-    println!("64*64: {:?}", computer.run_with_a(64 * 64));
-
-    let mut base_a = 0;
-    for i in 1..=program.len() {
-        println!("i={i}");
-        let mut found = false;
-        for add_a in 0.. {
-            let outp = computer.run_with_a(base_a + add_a);
-            println!("{outp:?}");
-            if (outp.len() >= i) && outp[outp.len() - i] == program[program.len() - i] as i64 {
-                println!("{} produces {outp:?}", base_a + add_a);
-                base_a = 8 * (base_a + add_a);
-                found = true;
-                break;
-            }
-        }
-    }
-    println!(
-        "105811504359834: {:?}",
-        computer.run_with_a(105811504359834)
-    );
-
-    // let mut search_start = 0;
-    // let mut search_cycle = vec![1];
-
-    // for prefix_len in 3..10 {
-    //     let prefix = program
-    //         .iter()
-    //         .map(|&c| c as Data)
-    //         .take(prefix_len)
-    //         .collect();
-    //     (search_start, search_cycle) =
-    //         find_prefix_cycle(&computer, prefix, search_start, search_cycle.clone());
-    // }
-
     println!("Part 1: {}", part1);
 
-    println!("Part 2: {}", "todo");
+    let computer = Y8Computer::load(reg_a, reg_b, reg_c, program.clone());
+    let target: Vec<Data> = program.iter().map(|&c| c as Data).collect();
+    let part2 = try_from(&computer, 0, &target, 1).expect("No solution for part 2 :(");
+    println!("Part 2: {}", part2);
 
     Ok(())
 }
