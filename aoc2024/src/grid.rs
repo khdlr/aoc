@@ -105,6 +105,7 @@ impl<U> Grid<U>
 where
     U: Clone,
 {
+    #![allow(dead_code)]
     fn from_entries<T: IntoIterator<Item = ((i32, i32), B)>, B>(iter: T) -> Self
     where
         B: Borrow<U>,
