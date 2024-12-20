@@ -1,4 +1,4 @@
-use std::{collections::HashSet, fmt::Display};
+use std::{collections::HashSet, fmt::Display, ops::Add};
 
 #[derive(PartialEq, Eq, Hash, Copy, Clone, Debug, PartialOrd, Ord)]
 pub enum Dir {
@@ -47,6 +47,22 @@ impl Dir {
             Dir::E => Dir::S,
             Dir::S => Dir::W,
         }
+    }
+}
+
+impl Add<(i32, i32)> for Dir {
+    type Output = (i32, i32);
+
+    fn add(self, rhs: (i32, i32)) -> Self::Output {
+        self.apply(rhs)
+    }
+}
+
+impl Add<Dir> for (i32, i32) {
+    type Output = (i32, i32);
+
+    fn add(self, rhs: Dir) -> Self::Output {
+        rhs.apply(self)
     }
 }
 
