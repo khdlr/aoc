@@ -1,6 +1,5 @@
 use std::collections::{HashMap, HashSet};
 use std::error::Error;
-use std::iter::successors;
 use std::{env, fs::read_to_string};
 
 use itertools::iterate;
@@ -68,7 +67,7 @@ pub fn main() -> Result<(), Box<dyn Error>> {
 
     let part2 = seqyield
         .into_iter()
-        .max_by_key(|(k, s)| *s)
+        .max_by_key(|(_, s)| *s)
         .expect("No seqyields!")
         .1;
     println!("Part 2: {}", part2);
