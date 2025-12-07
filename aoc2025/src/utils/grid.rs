@@ -343,8 +343,12 @@ where
 }
 
 impl Grid<char> {
-    pub fn from_str(str: &str) -> Self {
-        let grid = str.lines().map(|line| line.chars().collect()).collect();
+    pub fn from_str(str: impl ToString) -> Self {
+        let grid = str
+            .to_string()
+            .lines()
+            .map(|line| line.chars().collect())
+            .collect();
         Self { grid }
     }
 }
