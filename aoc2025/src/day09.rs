@@ -1,7 +1,4 @@
-use std::{
-    collections::{BTreeMap, BTreeSet},
-    fs::read_to_string,
-};
+use std::{collections::BTreeSet, fs::read_to_string};
 
 use crate::utils::grid::Grid;
 
@@ -136,10 +133,15 @@ pub fn solve(path: &str) {
                         }
                     }
                     last_x = x;
-                    if !onhorizontal {
+
+                    let old_horizontal = onhorizontal;
+                    onhorizontal = y == ya || y == yb;
+
+                    // Pretend we're
+                    // Line stops here
+                    if (yb != y) {
                         inside = !inside;
                     }
-                    onhorizontal = y == ya || y == yb;
                     yb > y
                 })
                 .collect();
@@ -192,41 +194,30 @@ pub fn solve(path: &str) {
         (val, val, val)
     });
 
-    allowed.print_map(|&b| if b { 'x' } else { ' ' });
+    // allowed.print_map(|&b| if b { 'x' } else { ' ' });
     // area.print_map(|&c| format!("{c:02} "));
 
     let mut max_area = 0;
     let mut max_rect = (0, 0, 0, 0);
-
-    // Sweep once more... :)
-    let mut span_area = BTreeMap::new();
-    for x0 in 0..allowed.width() {
-        for x1 in x0..allowed.width() {
-            span_area.insert((x0, x1), 0);
-        }
-    }
-    for y in 0..allowed.height() {
-        println!("y = {y}");
-        for x0 in 0..allowed.width() {
-            let mut all_allowed = allowed[(y, x0)];
-            let mut current_area = 0;
-            for x1 in x0..allowed.width() {
-                all_allowed &= allowed[(y, x1)];
-                current_area += area[(y, x1)];
-                if all_allowed {
-                    *span_area.get_mut(&(x0, x1)).unwrap() += rurrent_area;
-                    max_area = max_area.max(span_area[&(x0, x1)]);
-                    if x0 == 2 && x1 == 4 {
-                        println!(
-                            "  {x0} - {x1} (all_allowed: {all_allowed} / current_area: {current_area})"
-                        );
-                    }
-                } else {
-                    span_area.insert((x0, x1), 0);
+    for i in 0..pts.len() {
+        for j in 0..i {
+            let (y0, x0) = grid_yx(pts[i], &split_y, &split_x);
+            let (y1, x1) = grid_yx(pts[j], &split_y, &split_x);
+            let mut allow = true;
+            let mut ar = 0;
+            for y in y0..=y1 {
+                for x in x0..=x1 {
+                    allow &= allowed[(y, x)];
+                    ar += area[(y, x)];
                 }
+            }
+            if allow && ar > max_area {
+                max_rect = (y0, x0, y1, x1);
+                max_area = ar;
             }
         }
     }
 
+    println!("Best rect: {max_rect:?}");
     println!("Part 2: {max_area}");
 }
