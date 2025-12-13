@@ -203,6 +203,10 @@ pub fn solve(path: &str) {
         for j in 0..i {
             let (y0, x0) = grid_yx(pts[i], &split_y, &split_x);
             let (y1, x1) = grid_yx(pts[j], &split_y, &split_x);
+
+            let (y0, y1) = (y0.min(y1), y0.max(y1));
+            let (x0, x1) = (x0.min(x1), x0.max(x1));
+
             let mut allow = true;
             let mut ar = 0;
             for y in y0..=y1 {
